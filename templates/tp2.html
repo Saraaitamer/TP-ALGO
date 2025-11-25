@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<div class="container">
+  <header class="header">
+    <h1>Arbre Treap</h1>
+    <p class="subtitle">Arbre Binaire de Recherche + Tas</p>
+  </header>
+
+  <div id="welcome-screen" class="welcome-screen">
+    <div class="welcome-card">
+      <p>Choisissez le type de tas pour commencer</p>
+
+      <div class="heap-options">
+        <button class="heap-btn max-btn" onclick="createTree('MAX')">
+          <span class="heap-icon">📈</span>
+          <span class="heap-name">TAS max</span>
+          <span class="heap-desc">Priorité élevée = Racine</span>
+        </button>
+
+        <button class="heap-btn min-btn" onclick="createTree('MIN')">
+          <span class="heap-icon">📉</span>
+          <span class="heap-name">TAS min</span>
+          <span class="heap-desc">Priorité basse = Racine</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="main-screen" class="main-screen" style="display: none">
+    <div class="main-content">
+      <div class="left-panel">
+        <div class="panel-header">
+          <h2>Operations :</h2>
+          <span id="heap-type-badge" class="badge"></span>
+        </div>
+
+        <div class="control-section">
+          <h3>Insérer un nœud</h3>
+          <div class="input-group">
+            <input
+              type="number"
+              id="insert-key"
+              placeholder="Clé (entier)"
+              class="input-field"
+            />
+            <input
+              type="number"
+              id="insert-priority"
+              placeholder="Priorité (0-1)"
+              min="0.01"
+              max="0.99"
+              step="0.01"
+              class="input-field"
+            />
+            <button onclick="insertNode()" class="btn btn-primary">
+              Insérer
+            </button>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <h3>Rechercher</h3>
+          <div class="input-group">
+            <input
+              type="number"
+              id="search-key"
+              placeholder="Clé à chercher"
+              class="input-field"
+            />
+            <button onclick="searchNode()" class="btn btn-info">
+              Rechercher
+            </button>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <h3>Supprimer</h3>
+          <div class="input-group">
+            <input
+              type="number"
+              id="delete-key"
+              placeholder="Clé à supprimer"
+              class="input-field"
+            />
+            <button onclick="deleteNode()" class="btn btn-danger">
+              Supprimer
+            </button>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <h3>Actions</h3>
+          <button
+            onclick="refreshVisualization()"
+            class="btn btn-secondary full-width"
+          >
+            Rafraîchir
+          </button>
+          <button onclick="resetTree()" class="btn btn-warning full-width">
+            Réinitialiser
+          </button>
+        </div>
+
+        <div class="stats-section">
+          <h3>Statistiques</h3>
+          <div class="stat-item">
+            <span class="stat-label">Nœuds:</span>
+            <span id="stat-nodes" class="stat-value">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Hauteur:</span>
+            <span id="stat-height" class="stat-value">0</span>
+          </div>
+        </div>
+
+        <div class="operations-section">
+          <h3>Historique</h3>
+          <div id="operations-list" class="operations-list"></div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="visualization-container">
+          <div id="message-box" class="message-box"></div>
+          <div id="visualization" class="visualization">
+            <img id="tree-image" src="{{ url_for('static', filename='placeholder.svg') }}" alt="Visualisation de l'arbre" style="display: none">
+            <div id="empty-state" class="empty-state">
+              <p>L'arbre est vide</p>
+              <p class="empty-hint">
+                Insérez des nœuds pour voir la visualisation
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,285 @@
+* {
+    box-sizing: border-box;
+    font-family: "Poppins", Arial, sans-serif;
+  }
+  
+  body {
+    margin: 0;
+    background: #eaf3fa; /* bleu bébé doux */
+    color: #222;
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      height: 100%;
+      background: #bcd8f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 0;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  }
+  
+  .sidebar .logo {
+    height: 120px;
+    margin-bottom: 50px;
+  }
+  
+  /* --- MENU --- */
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  
+  .sidebar li {
+    margin: 8px 0;
+  }
+  
+  .sidebar a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px 0;
+    color: #1b3b5f;
+    font-weight: 600;
+    text-decoration: none;
+    overflow: hidden;
+    z-index: 1;
+    isolation: isolate;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  
+  .sidebar a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #a5ccf2;
+    transition: left 0.3s ease;
+    z-index: -1;
+  }
+  
+  .sidebar a:hover::before,
+  .sidebar a:focus::before {
+    left: 0;
+  }
+  
+  .sidebar a,
+  .sidebar a i {
+    color: #1b3b5f;
+    position: relative;
+    z-index: 1;
+    mix-blend-mode: normal;
+  }
+  
+  .sidebar a:hover,
+  .sidebar a:hover i,
+  .sidebar a:focus,
+  .sidebar a:focus i {
+    color: #4a698b;
+  }
+  
+  
+  .sidebar a:not(:first-child):hover,
+  .sidebar a:not(:first-child):focus {
+    transform: scale(1.08);
+  }
+  
+  .sidebar a i {
+    margin-right: 10px;
+    font-size: 1.1em;
+  }
+  
+  
+  main {
+     margin-left: 250px;
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* ✅ centre verticalement */
+  }
+  
+  /* --- PRESENTATION --- */
+  .presentation {
+    text-align: center;
+    width: 100%;
+  }
+  
+  .presentation-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 40px 50px;
+    display: inline-block;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .presentation h1 {
+    color: #003366;
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .presentation .intro {
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  /* --- GROUPE INFO --- */
+  .groupe-info {
+    background: #f7fbff;
+    border-left: 6px solid #a5ccf2;
+    border-radius: 10px;
+    padding: 25px;
+    text-align: left;
+    color: #1e3a5f;
+  }
+  
+  .groupe-info h2,
+  .groupe-info h3 {
+    color: #003366;
+    margin-bottom: 10px;
+  }
+  
+  .groupe-info p,
+  .groupe-info li {
+    font-size: 1em;
+    line-height: 1.6;
+  }
+  
+  .groupe-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .groupe-info li {
+    margin: 6px 0;
+  }
+  
+  .groupe-info li i {
+    color: #4d90fe;
+    margin-right: 8px;
+  }
+  
+  .groupe-info li span {
+    color: #1b5fc2;
+    font-style: italic;
+  }
+  
+  .responsable {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #003366;
+  }
+  
+  .groupe-info i {
+    color: #005fa3;
+    margin-right: 8px;
+  }
+  /* --- SECTION TP1 --- */
+  .tp1-section {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+  }
+  
+  .tp1-section h1 {
+      color: #003366;
+      font-size: 2em;
+      margin-bottom: 20px;
+  }
+  
+  .tp1-section form {
+      background: #f7fbff;
+      border: 1px solid #a5ccf2;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+  }
+  
+  .tp1-section form h3, .tp1-section form h4 {
+      color: #003366;
+  }
+  
+  .tp1-section form input[type="text"], 
+  .tp1-section form select {
+      padding: 8px 12px;
+      margin: 8px 0;
+      width: 100%;
+      border: 1px solid #ffffff;
+      border-radius: 6px;
+  }
+  
+  .tp1-section form label {
+      display: inline-block;
+      margin-right: 15px;
+      font-weight: 500;
+  }
+  
+  .tp1-section form button {
+      margin-top: 15px;
+      padding: 10px 25px;
+      border: none;
+      background: #1b5fc2;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+  }
+  
+  .tp1-section form button:hover {
+      background: #003366;
+  }
+  
+  /* --- RESULTATS --- */
+  .tp1-section img {
+      margin-top: 15px;
+      border: 1px solid #a5ccf2;
+      border-radius: 10px;
+      max-width: 100%;
+      height: auto;
+  }
+  
+  .tp1-section p {
+      font-weight: 500;
+      margin: 5px 0;
+      color: #003366;
+  }
+  
+  /* --- FORMULAIRE DYNAMIQUE --- */
+  #form_arbre, #form_graphe {
+      text-align: left;
+      background: #eaf3fa;
+      padding: 15px;
+      margin-top: 10px;
+      border-left: 5px solid #a5ccf2;
+      border-radius: 8px;
+  }
+  
+  #form_arbre h4, #form_graphe h4 {
+      margin-bottom: 8px;
+  }
+  
+  /* --- MEDIA QUERY --- */
+  @media (max-width: 768px) {
+      .tp1-section form input[type="text"], .tp1-section form select {
+          width: 100%;
+      }
+  }
+  

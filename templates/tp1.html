@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="tp1-section">
+  <h1>TP1 : Arbres et Graphes</h1>
+
+  {% if resultats.arbre_img or resultats.graphe_img %}
+    <!-- Résultats Arbre -->
+    {% if resultats.arbre_img %}
+      <h3>Arbre généré :</h3>
+      <img src="data:image/png;base64,{{ resultats.arbre_img }}" alt="Arbre">
+      <p>Hauteur : {{ resultats.arbre_hauteur }}</p>
+      <p>Degré maximum : {{ resultats.arbre_degre }}</p>
+      <p>Densité : {{ resultats.arbre_densite }}</p>
+    {% endif %}
+
+    <!-- Résultats Graphe -->
+    {% if resultats.graphe_img %}
+      <h3>Graphe généré :</h3>
+      <img src="data:image/png;base64,{{ resultats.graphe_img }}" alt="Graphe">
+      <p>Degré maximum : {{ resultats.graphe_degre }}</p>
+      <p>Densité : {{ resultats.graphe_densite }}</p>
+    {% endif %}
+
+    <!-- Bouton Retour après résultat -->
+    <form method="get" style="margin-top:20px;">
+      <button type="submit">Retour</button>
+    </form>
+
+  {% else %}
+    <form method="post" id="choixForm">
+      <!-- Étape 1 : choix -->
+      <div id="etape1">
+        <h3>Que voulez-vous générer ?</h3>
+        <label><input type="checkbox" name="choix" value="arbre"> Arbre</label>
+        <label><input type="checkbox" name="choix" value="graphe"> Graphe</label>
+        <p id="erreur" style="color:red; font-weight:bold; display:none;"></p>
+        <br>
+        <button type="button" id="suivant">Suivant</button>
+      </div>
+
+      <!-- Formulaire Arbre -->
+      <div id="form_arbre" style="display:none; margin-top:10px;">
+        <h4>Type d'arbre :</h4>
+        <select name="type_arbre" id="type_arbre">
+          <option value="ABR">ABR</option>
+          <option value="AVL">AVL</option>
+          <option value="Tas">Tas</option>
+          <option value="AMR">AMR</option>
+          <option value="B-arbre">B-arbre</option>
+        </select>
+
+        <!-- Options dynamiques selon type -->
+        <div id="options_tas" style="display:none; margin-top:10px;">
+          <label>Type de Tas :</label>
+          <select name="type_tas">
+            <option value="min">Min</option>
+            <option value="max">Max</option>
+          </select>
+        </div>
+
+        <div id="options_amr" style="display:none; margin-top:10px;">
+          <label>Nombre de racines :</label>
+          <input type="number" name="nb_racines" placeholder="Ex : 2" min="1">
+        </div>
+
+        <div id="options_barbre" style="display:none; margin-top:10px;">
+          <label>Ordre du B-arbre (t) :</label>
+          <input type="number" name="bordre" placeholder="Ex : 2" min="2">
+        </div>
+
+        <p style="margin-top:10px;">Entrez les valeurs de l'arbre (nombres séparés par des virgules) :</p>
+        <input type="text" name="valeurs_arbre" placeholder="Ex: 10,5,15,3,7">
+        <p id="erreur_arbre" style="color:red; font-weight:bold; display:none;"></p>
+      </div>
+
+      <!-- Formulaire Graphe -->
+      <div id="form_graphe" style="display:none; margin-top:10px;">
+        <h4>Options du graphe :</h4>
+        <label><input type="checkbox" name="oriente"> Orienté</label>
+        <label><input type="checkbox" name="pondere"> Pondéré</label>
+        <p>Entrez les valeurs du graphe (lettres ou nombres, séparées par des virgules) :</p>
+        <input type="text" name="valeurs_graphe" placeholder="Ex: 1,2,3 ou A,B,C">
+        <p id="erreur_graphe" style="color:red; font-weight:bold; display:none;"></p>
+      </div>
+
+      <!-- Boutons globaux -->
+      <div id="boutons_form" style="margin-top:10px; display:none; gap:10px; display:flex;">
+        <button type="button" id="retour">Retour</button>
+        <button type="submit" id="terminer">Terminer</button>
+      </div>
+    </form>
+  {% endif %}
+</section>
+
+<script>
+const arbreCheckbox = document.querySelector('input[value="arbre"]');
+const grapheCheckbox = document.querySelector('input[value="graphe"]');
+const etape1 = document.getElementById('etape1');
+const formArbre = document.getElementById('form_arbre');
+const formGraphe = document.getElementById('form_graphe');
+const boutonSuivant = document.getElementById('suivant');
+const boutonTerminer = document.getElementById('terminer');
+const boutonRetour = document.getElementById('retour');
+const boutonsForm = document.getElementById('boutons_form');
+const erreur = document.getElementById('erreur');
+const erreurArbre = document.getElementById('erreur_arbre');
+const erreurGraphe = document.getElementById('erreur_graphe');
+const form = document.getElementById('choixForm');
+
+// Options dynamiques selon le type d'arbre
+const typeArbreSelect = document.getElementById('type_arbre');
+const optionsTas = document.getElementById('options_tas');
+const optionsAMR = document.getElementById('options_amr');
+const optionsBArbre = document.getElementById('options_barbre');
+
+typeArbreSelect.addEventListener('change', () => {
+  optionsTas.style.display = 'none';
+  optionsAMR.style.display = 'none';
+  optionsBArbre.style.display = 'none';
+  const val = typeArbreSelect.value;
+  if (val === 'Tas') optionsTas.style.display = 'block';
+  else if (val === 'AMR') optionsAMR.style.display = 'block';
+  else if (val === 'B-arbre') optionsBArbre.style.display = 'block';
+});
+
+// Fonction validation
+function validate(){
+  erreur.style.display = 'none';
+  erreur.textContent = '';
+  erreurArbre.style.display = 'none';
+  erreurGraphe.style.display = 'none';
+
+  if(!arbreCheckbox.checked && !grapheCheckbox.checked){
+    erreur.textContent = "⚠ Vous devez choisir Arbre ou Graphe !";
+    erreur.style.display = 'block';
+    return false;
+  }
+
+  if(arbreCheckbox.checked && formArbre.style.display === 'block'){
+    const valArbre = formArbre.querySelector('input[name="valeurs_arbre"]').value.trim();
+    if(valArbre === ''){
+      erreurArbre.textContent = "⚠ Entrez au moins un nombre pour l'arbre !";
+      erreurArbre.style.display = 'block';
+      return false;
+    }
+    const regexArbre = /^(\d+\s*)(,\s*\d+\s*)*$/;
+    if(!regexArbre.test(valArbre)){
+      erreurArbre.textContent = "⚠ Entrez uniquement des nombres séparés par des virgules pour l'arbre !";
+      erreurArbre.style.display = 'block';
+      return false;
+    }
+  }
+
+  if(grapheCheckbox.checked && formGraphe.style.display === 'block'){
+    const valGraphe = formGraphe.querySelector('input[name="valeurs_graphe"]').value.trim();
+    if(valGraphe === ''){
+      erreurGraphe.textContent = "⚠ Entrez au moins une valeur pour le graphe !";
+      erreurGraphe.style.display = 'block';
+      return false;
+    }
+    const regexGraphe = /^([A-Za-z0-9]+\s*)(,\s*[A-Za-z0-9]+\s*)*$/;
+    if(!regexGraphe.test(valGraphe)){
+      erreurGraphe.textContent = "⚠ Entrez des lettres ou nombres séparés par des virgules !";
+      erreurGraphe.style.display = 'block';
+      return false;
+    }
+  }
+  return true;
+}
+
+// Bouton Suivant
+boutonSuivant.addEventListener('click', () => {
+  if(!validate()) return;
+  etape1.style.display = 'none';
+  if(arbreCheckbox.checked) formArbre.style.display = 'block';
+  if(grapheCheckbox.checked) formGraphe.style.display = 'block';
+  boutonsForm.style.display = 'flex';
+});
+
+// Bouton Retour
+boutonRetour.addEventListener('click', () => {
+  formArbre.style.display = 'none';
+  formGraphe.style.display = 'none';
+  boutonsForm.style.display = 'none';
+  etape1.style.display = 'block';
+});
+
+// Validation avant Terminer
+form.addEventListener('submit', (e) => {
+  if(!validate()) e.preventDefault();
+});
+</script>
+
+{% endblock %}

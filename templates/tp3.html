@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='tp3.css') }}">
+
+<div class="tp3-container">
+  <header class="tp3-header">
+    <h1>TP3 : Tri par Treap</h1>
+  </header>
+
+  <!-- Formulaire -->
+  <div id="form-card" class="tp3-form-card" {% if resultats %}style="display:none;"{% endif %}>
+    <form id="treap-form" method="POST">
+      <label>Clés (séparées par des virgules) :</label>
+      <input type="text" name="values" placeholder="ex: 5,3,8,1" required>
+
+      <label>Méthode de tri :</label>
+      <div class="radio-group">
+        <label><input type="radio" name="method" value="abr" {% if resultats and resultats.method == 'abr' %}checked{% endif %}>Par clé(ABR)</label>
+        <label><input type="radio" name="method" value="tas" {% if resultats and resultats.method == 'tas' %}checked{% endif %}>Par priorité(TAS) </label>
+      </div>
+
+      <!-- Options TAS -->
+      <div id="priority_mode_container" style="display:none;">
+        <label>Mode des priorités :</label>
+        <div class="radio-group">
+          <label><input type="radio" name="priority_mode" value="manual" {% if resultats and resultats.priority_mode == 'manual' %}checked{% endif %}> Manuel</label>
+          <label><input type="radio" name="priority_mode" value="auto" {% if not resultats or resultats.priority_mode == 'auto' %}checked{% endif %}> Automatique</label>
+        </div>
+      </div>
+
+      <div id="manual_priorities" style="display:none;">
+        <label>Priorités (séparées par des virgules) :</label>
+        <input type="text" name="priorities" placeholder="ex: 0.5,0.9,0.2,0.7" value="{% if resultats and resultats.priority_mode == 'manual' %}{{ resultats.priorities|join(',') }}{% endif %}">
+      </div>
+
+      <div id="heap_type_container" style="display:none;">
+        <label>Type de Tas :</label>
+        <div class="radio-group">
+          <label><input type="radio" name="heap_type" value="max" checked> Tas Max (priorité la plus haute en premier)</label>
+          <label><input type="radio" name="heap_type" value="min"> Tas Min (priorité la plus basse en premier)</label>
+        </div>
+      </div>
+
+      <button type="submit">Trier</button>
+    </form>
+  </div>
+
+  <!-- Résultats -->
+  {% if resultats %}
+  <div id="results-card" class="tp3-results-card">
+    <h2>Résultats</h2>
+    <p><strong>Méthode :</strong> {{ resultats.method|upper }}</p>
+    {% if resultats.method == 'tas' %}
+      <p><strong>Type de Tas :</strong> {{ resultats.heap_type|upper }}</p>
+    {% endif %}
+    <p><strong>Clés originales :</strong> {{ resultats.original }}</p>
+    <p><strong>Clés triées :</strong> {{ resultats.sorted }}</p>
+
+    <h3>Complexités théorique</h3>
+    <ul>
+      <li><strong>Insertion :</strong> {{ resultats.theorique.insertion }} — {{ resultats.theorique.insertion_val }}</li>
+      <li><strong>Suppression :</strong> {{ resultats.theorique.suppression }} — {{ resultats.theorique.suppression_val }}</li>
+      <li><strong>Recherche :</strong> {{ resultats.theorique.recherche }} — {{ resultats.theorique.recherche_val }}</li>
+      <li><strong>Tri :</strong> {{ resultats.theorique.tri }} — {{ resultats.theorique.tri_val }}</li>
+    </ul>
+
+    <h3>Complexité réelle</h3>
+    <ul>
+      {% if resultats.method == 'tas' %}
+        <li>Suppressions : {{ resultats.counters.deletions if resultats.counters else 0 }}</li>
+      {% endif %}
+      <li>Temps d'exécution :
+        {% set total_ms = (resultats.time_sec * 1000) %}
+        {% if total_ms >= 1000 %}
+            {% set sec = (total_ms / 1000)|int %}
+            {% set ms = (total_ms % 1000)|round(0) %}
+            {{ sec }}S{{ ms }}ms
+        {% elif total_ms >= 1 %}
+            {{ total_ms|round(2) }}ms
+        {% else %}
+            {{ (total_ms * 1000)|round(0) }}µs
+        {% endif %}
+      </li>
+      <li>Taille n : {{ resultats.n }}</li>
+    </ul>
+
+    <form method="get">
+      <button type="submit">Terminer</button>
+    </form>
+  </div>
+
+  <!-- Timeline des étapes -->
+  <!-- Timeline des étapes -->
+{% if resultats.steps %}
+<div id="steps-card" class="tp3-steps-card">
+  <h3>Étapes du tri</h3>
+  <button id="toggle-steps" type="button">Afficher les étapes</button>
+  <div id="steps-content" style="display:none;">
+    {% for step in resultats.steps %}
+      <div class="step">
+        <h4>{{ step.label }}</h4>
+        {% if step.img %}
+          <img src="data:image/png;base64,{{ step.img|safe }}">
+        {% else %}
+          <p>(Arbre vide)</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+  {% endif %}
+</div>
+
+<script>
+const methodRadios = document.querySelectorAll('input[name="method"]');
+const priorityContainer = document.getElementById('priority_mode_container');
+const manualDiv = document.getElementById('manual_priorities');
+const manualRadio = document.querySelector('input[name="priority_mode"][value="manual"]');
+const autoRadio = document.querySelector('input[name="priority_mode"][value="auto"]');
+const heapTypeContainer = document.getElementById('heap_type_container');
+function updateDisplay() {
+  const selected = document.querySelector('input[name="method"]:checked')?.value || "abr";
+  if (selected === "tas") {
+    priorityContainer.style.display = "block";
+    manualDiv.style.display = manualRadio && manualRadio.checked ? "block" : "none";
+    heapTypeContainer.style.display = "block";
+  } else {
+    priorityContainer.style.display = "none";
+    manualDiv.style.display = "none";
+    heapTypeContainer.style.display = "none";
+  }
+}
+methodRadios.forEach(r => r.addEventListener('change', updateDisplay));
+if (manualRadio) manualRadio.addEventListener('change', updateDisplay);
+if (autoRadio) autoRadio.addEventListener('change', updateDisplay);
+updateDisplay();
+const toggleButton = document.getElementById('toggle-steps');
+const stepsContent = document.getElementById('steps-content');
+
+if (toggleButton && stepsContent) {
+  toggleButton.addEventListener('click', () => {
+    if (stepsContent.style.display === 'none') {
+      stepsContent.style.display = 'block';
+      toggleButton.textContent = 'Masquer les étapes';
+    } else {
+      stepsContent.style.display = 'none';
+      toggleButton.textContent = 'Afficher les étapes';
+    }
+  });
+}
+
+</script>
+{% endblock %}
