@@ -1,6 +1,6 @@
-# ===============================
+
 #       APP TP1 + TP2 + TP3
-# ===============================
+
 from flask import Flask, render_template, request
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -12,15 +12,15 @@ from tp1_algo import (
     construire_graphe, densite_graphe
 )
 
-from treap import Treap  # Utilisation du vrai Treap (rotations/invariants)
+from treap import Treap  
 
 plt.switch_backend('Agg')
 
 app = Flask(__name__)
 
-# ==============================
+
 #   Position hiérarchique
-# ==============================
+
 def hierarchy_pos(G, root=None, width=1., vert_gap=0.2, vert_loc=0, xcenter=0.5):
     if not nx.is_tree(G):
         return nx.spring_layout(G)
@@ -46,9 +46,9 @@ def hierarchy_pos(G, root=None, width=1., vert_gap=0.2, vert_loc=0, xcenter=0.5)
         return pos
     return _hierarchy_pos(G, root, width, vert_gap, vert_loc, xcenter)
 
-# ==============================
+
 #   Dessin graphe / arbre
-# ==============================
+
 def graphe_to_base64(G, figsize=(8, 6), title=None):
     plt.figure(figsize=figsize)
     try:
@@ -80,9 +80,9 @@ def graphe_to_base64(G, figsize=(8, 6), title=None):
     plt.close()
     return img_base64
 
-# ==============================
+
 #           ROUTES
-# ==============================
+
 
 @app.route('/')
 def index():
@@ -287,8 +287,6 @@ def tp2_visualization(tree_id):
     return json.dumps({'success': True, 'image': image})
 
 # ---------- TP3 : Insertion, Suppression, Tri ----------
-# Correction: TP3 utilise maintenant un vrai Treap pour trier par clé (infixe)
-# ou par priorité (suppressions successives de la racine).
 
 from flask import Flask, render_template, request
 from treap import Treap
