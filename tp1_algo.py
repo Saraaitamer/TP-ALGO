@@ -1,9 +1,9 @@
 import networkx as nx
 import heapq
 
-# ============================
+
 #        ARBRES
-# ============================
+
 
 class Node:
     def __init__(self, val):
@@ -11,7 +11,7 @@ class Node:
         self.left = None
         self.right = None
 
-# --- 1️⃣ ABR ---
+
 def construire_abr(valeurs):
     if not valeurs:
         return None
@@ -33,7 +33,7 @@ def insert_abr(root, val):
             insert_abr(root.right, val)
 
 
-# --- 2️⃣ AVL ---
+
 class AVLNode(Node):
     def __init__(self, val):
         super().__init__(val)
@@ -94,7 +94,7 @@ def construire_avl(valeurs):
     return root
 
 
-# --- 3️⃣ TAS ---
+
 def construire_tas(valeurs, type_tas="min"):
     if type_tas == "min":
         h = valeurs[:]
@@ -108,7 +108,7 @@ def construire_tas(valeurs, type_tas="min"):
         raise ValueError("Type de tas invalide : choisissez 'min' ou 'max'.")
 
 
-# --- 4️⃣ AMR ---
+
 class AMRNode:
     def __init__(self, val):
         self.val = val
@@ -128,7 +128,7 @@ def construire_amr(valeurs, nb_racines=2):
     return racines
 
 
-# --- 5️⃣ B-ARBRE ---
+
 class BTreeNode:
     def __init__(self, t):
         self.keys = []
@@ -149,7 +149,7 @@ def construire_btree(valeurs, t=2):
     return root
 
 
-# --- HAUTEUR ---
+
 def hauteur_arbre(root):
     if not root:
         return 0
@@ -160,7 +160,7 @@ def hauteur_arbre(root):
     return 1 + max(hauteur_arbre(root.left), hauteur_arbre(root.right))
 
 
-# --- CONVERSION EN GRAPH ---
+ 
 def arbre_to_nx(root):
     G = nx.Graph()
     def add_edges(node):
@@ -198,6 +198,6 @@ def construire_graphe(valeurs, oriente=False, pondere=False):
     return G
 
 
-# --- DENSITÉ ---
+# DENSITÉ 
 def densite_graphe(G):
     return nx.density(G)
