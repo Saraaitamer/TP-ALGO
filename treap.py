@@ -13,21 +13,13 @@ class TreapNode:
         self.right: Optional[TreapNode] = None
 
 class Treap:
-    """Arbre Treap (Treap = Tree + Heap)
-    - Propriété BST : clé(gauche) < clé(nœud) < clé(droite)
-    - Propriété Heap : priorité(parent) >= priorité(enfants) pour MAX heap
-                       priorité(parent) <= priorité(enfants) pour MIN heap
-    """
     def __init__(self, heap_type="MAX"):
         self.root = None
         self.heap_type = heap_type.upper()
         self.comparisons = 0 
     
     def __init__(self, heap_type: str = "MAX"):
-        """
-        Initialise un Treap
-        heap_type: "MAX" ou "MIN"
-        """
+        
         self.root: Optional[TreapNode] = None
         self.heap_type = heap_type.upper()
         if self.heap_type not in ["MAX", "MIN"]:
@@ -49,14 +41,14 @@ class Treap:
         return left_child
     
     def _rotate_left(self, node: TreapNode) -> TreapNode:
-        """Rotation gauche"""
+        
         right_child = node.right
         node.right = right_child.left
         right_child.left = node
         return right_child
     
     def insert(self, key: int, priority: float) -> bool:
-        """Insère une clé avec une priorité"""
+        
         if not (0 < priority < 1):
             raise ValueError("La priorité doit être entre 0 et 1 (exclusif)")
         
@@ -68,7 +60,7 @@ class Treap:
         return inserted
     
     def _insert_recursive(self, node: Optional[TreapNode], key: int, priority: float) -> Tuple[TreapNode, bool]:
-        """Insertion récursive avec rotations"""
+        
         if node is None:
             return TreapNode(key, priority), True
         
@@ -87,7 +79,7 @@ class Treap:
         return node, inserted
     
     def search(self, key: int) -> Optional[float]:
-        """Recherche une clé et retourne sa priorité"""
+        
         node = self._search_recursive(self.root, key)
         if node:
             self.operations_log.append(f"✓ Recherche: clé={key} trouvée (priorité={node.priority:.2f})")
@@ -97,7 +89,7 @@ class Treap:
             return None
     
     def _search_recursive(self, node: Optional[TreapNode], key: int) -> Optional[TreapNode]:
-        """Recherche récursive"""
+        
         if node is None:
             return None
         
@@ -109,7 +101,7 @@ class Treap:
             return self._search_recursive(node.right, key)
     
     def delete(self, key: int) -> bool:
-        """Supprime une clé"""
+        
         self.root, deleted = self._delete_recursive(self.root, key)
         if deleted:
             self.operations_log.append(f"✓ Suppression: clé={key}")
@@ -118,7 +110,7 @@ class Treap:
         return deleted
     
     def _delete_recursive(self, node: Optional[TreapNode], key: int) -> Tuple[Optional[TreapNode], bool]:
-        """Suppression récursive avec rotations"""
+        
         if node is None:
             return None, False
         
@@ -151,7 +143,7 @@ class Treap:
         return result
     
     def _inorder_recursive(self, node: Optional[TreapNode], result: List):
-        """Parcours en ordre récursif"""
+        
         if node:
             self._inorder_recursive(node.left, result)
             result.append((node.key, node.priority))
